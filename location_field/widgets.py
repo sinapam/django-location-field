@@ -20,6 +20,12 @@ class LocationWidget(widgets.TextInput):
         super(LocationWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
+        default_latitude = getattr(settings, 'DEFAULT_LATITUDE', '')
+        default_longitude = getattr(settings, 'DEFAULT_LONGITUDE', '')
+        if default_latitude and default_longitude:
+            default_value = '{},{}'.format(default_longitude, default_latitude)
+        else:
+            default_value = ''
         if value is not None:
             try:
                 if isinstance(value, six.string_types):
@@ -33,9 +39,9 @@ class LocationWidget(widgets.TextInput):
                     float(lng),
                 )
             except ValueError:
-                value = ''
+                value = default_value
         else:
-            value = ''
+            value = default_value
 
         if '-' not in name:
             prefix = ''
